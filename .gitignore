@@ -1,0 +1,48 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+  <div className="relative">
+        <AnimatePresence>
+          <motion.div
+            key="image1"
+            initial={{ opacity: 0, x: -100 }}
+            whileInView={{ scale: inView ? 1.1 : 1, rotate: inView ? 360 : 0 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 100 }}
+            transition={{ duration: 1, delay: 1 }}
+            style={{ position: 'absolute', top: '70%', left: '50%', transform: 'translate(-20%, -20%)' }}
+          >
+            <motion.img
+             src={bookImage}
+              alt="Library Image"
+             className="rounded-3xl shadow-lg " 
+             style={{ backgroundColor:"#A0522D" , mixBlendMode: 'multiply', width: '100%', height: 'auto' }}
+            
+            />
+          </motion.div>
+  </AnimatePresence>
+
+      </div> 
+.vercel
