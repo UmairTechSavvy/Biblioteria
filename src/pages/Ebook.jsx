@@ -3,6 +3,7 @@ import 'tailwindcss/tailwind.css';
 import PDFViewer from '../componenets/templates'; // Adjust the path according to your project structure
 import {motion} from 'framer-motion'
 import B5 from '/src/b5.jpg'
+import Footer from '../componenets/footer'
 
 
 
@@ -101,6 +102,7 @@ function Ebook({ showPage, setShowPage, onHomePageClick }) {
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     setShow(true);
+    setShow(e.target.value.trim() !== ''); 
   };
   const handleHomePageClick = () => {
     sessionStorage.setItem("isEbookPage", JSON.stringify(false));
@@ -111,6 +113,7 @@ function Ebook({ showPage, setShowPage, onHomePageClick }) {
   );
 
   return (
+    <>
     <motion.div
       className="min-h-screen flex flex-col items-center justify-center relative"
       style={{
@@ -139,33 +142,53 @@ function Ebook({ showPage, setShowPage, onHomePageClick }) {
   whileHover={{ scale: 1.1 }}
   whileTap={{ scale: 0.9 }}
   style={{
-    mixBlendMode: "multiply",
+    backgroundColor:"white",
     zIndex: 5,
     borderStyle: "inset", // Apply groove border style
     borderWidth: "2px", // Border width
   }}
 >
-  Explore
+  Home Page
 </motion.button>
-      <motion.header 
-      
-      whileInView={{color:"#1400c6"}}
-      whileHover={{scale:2}}
-      className="text-center">
-        <h1 className="text-3xl font-bold text-gray-300 italic mb-4">
-          <strong>Biblioteria</strong>
-        </h1>
-      </motion.header>
-      <motion.div className="mb-8" initial={{rotate:0}} animate={{rotate:360}}>
-        <h2 className="text-xl text-gray-300 font-semibold italic mb-2">
-          <strong>Find a book to read:</strong>
-        </h2>
+
+<div style={{ display: "flex" }}>
+  {"Biblioteria".split("").map((letter, index) => (
+    <motion.span
+      key={index}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 0.3, ease: "easeInOut", delay: index * 0.1 }}
+      style={{ display: "inline-block", fontStyle: "italic" }}
+      className='font-bold italic text-2xl text-gray-300'
+      whileHover={{ scale: 1.2 }}
+    >
+      {letter}
+    </motion.span>
+  ))}
+</div>;
+
+      <div style={{ display: "flex" }}>
+  {"Find a book to read".split("").map((letter, index) => (
+    <motion.span
+      key={index}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ duration: 0.3, ease: "easeInOut", delay: index * 0.1 }}
+      style={{ display: "inline-block" , fontStyle:"italic" }}
+      className='font-bold italic text-2xl text-gray-400 mt-0'
+    >
+      {letter}
+    </motion.span>
+  ))}
+</div>
+
+        <motion.div >
         <input
           type="text"
           value={searchQuery}
           onChange={handleSearchChange}
           placeholder="Search PDF by name"
-          className="px-4 py-2 mb-4 rounded border border-gray-300 focus:outline-none focus:border-blue-500 bg-white"
+          className="px-4 py-2 mb-4 mt-3 rounded border border-gray-300 focus:outline-none focus:border-blue-500 bg-white"
         />
 
         {show && (
@@ -191,7 +214,10 @@ function Ebook({ showPage, setShowPage, onHomePageClick }) {
           <p className="text-gray-600">Or drag and drop a PDF file here</p>
         </div>
       )}
+     
     </motion.div>
+      
+      </>
   );
 }
 
