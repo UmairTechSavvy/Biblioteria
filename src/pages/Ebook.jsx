@@ -90,10 +90,33 @@ const pdfSources = [
   
 ];
 
-function Ebook({ showPage, setShowPage, onHomePageClick }) {
+const Ebook = ({ showPage, setShowPage, onHomePageClick }) => {
   const [pdfFile, setPdfFile] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [show, setShow] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const filteredPDFSources = pdfSources.filter((source) =>
+    source.name && source.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredPDFSources.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = filteredPDFSources.slice(startIndex, startIndex + itemsPerPage);
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   const handleSelectPDF = (url) => {
     setPdfFile(url);
@@ -101,124 +124,144 @@ function Ebook({ showPage, setShowPage, onHomePageClick }) {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    setShow(true);
-    setShow(e.target.value.trim() !== ''); 
+    setShow(e.target.value.trim() !== '');
+    setCurrentPage(1); // Reset to first page on new search
   };
+
   const handleHomePageClick = () => {
     sessionStorage.setItem("isEbookPage", JSON.stringify(false));
     window.location.reload(); // Reload the page to show the homepage
   };
-  const filteredPDFSources = pdfSources.filter((source) =>
-    source.name && source.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <>
-    <motion.div
-      className="min-h-screen flex flex-col items-center justify-center relative"
-      style={{
-        backgroundImage: `url(${B5})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-    >
       <motion.div
-        className="absolute inset-0"
+        className="min-h-screen flex flex-col items-center justify-center relative"
         style={{
-          background: 'linear-gradient(to top, #0000ff, #ffffff)',
-          opacity: 0.8,
-          zIndex: -1,
+          backgroundImage: `url(${B5})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
-        initial={{ y: '100vh' }}
-        animate={{ y: 0 }}
-        transition={{ duration: 2, delay: 1 }}
-      ></motion.div>
-     <motion.button
-  className="absolute left-10 top-4 rounded-lg shadow-lg text-5xl text-red italic font-bold border border-gray-800"
-  onClick={handleHomePageClick}
-  whileHover={{ scale: 1.1 }}
-  whileTap={{ scale: 0.9 }}
-  style={{
-    backgroundColor:"white",
-    zIndex: 5,
-    borderStyle: "inset", // Apply groove border style
-    borderWidth: "2px", // Border width
-  }}
->
-  Home Page
-</motion.button>
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+      >
+        <motion.div
+          className="absolute inset-0"
+          style={{
+            background: 'linear-gradient(to top, #0000ff, #ffffff)',
+            opacity: 0.8,
+            zIndex: -1,
+          }}
+          initial={{ y: '100vh' }}
+          animate={{ y: 0 }}
+          transition={{ duration: 2, delay: 1 }}
+        ></motion.div>
 
-<div style={{ display: "flex" }}>
-  {"Biblioteria".split("").map((letter, index) => (
-    <motion.span
-      key={index}
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      transition={{ duration: 0.3, ease: "easeInOut", delay: index * 0.1 }}
-      style={{ display: "inline-block", fontStyle: "italic" }}
-      className='font-bold italic text-2xl text-gray-300'
-      whileHover={{ scale: 1.2 }}
-    >
-      {letter}
-    </motion.span>
-  ))}
-</div>;
+        <motion.button
+          className="absolute left-10 top-4 rounded-lg shadow-lg text-5xl text-red italic font-bold border border-gray-800"
+          onClick={handleHomePageClick}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          style={{
+            backgroundColor: "white",
+            zIndex: 5,
+            borderStyle: "inset",
+            borderWidth: "2px",
+          }}
+        >
+          Home Page
+        </motion.button>
 
-      <div style={{ display: "flex" }}>
-  {"Find a book to read".split("").map((letter, index) => (
-    <motion.span
-      key={index}
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      transition={{ duration: 0.3, ease: "easeInOut", delay: index * 0.1 }}
-      style={{ display: "inline-block" , fontStyle:"italic" }}
-      className='font-bold italic text-2xl text-gray-400 mt-0'
-    >
-      {letter}
-    </motion.span>
-  ))}
-</div>
+        <div style={{ display: "flex" }}>
+          {"Biblioteria".split("").map((letter, index) => (
+            <motion.span
+              key={index}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.3, ease: "easeInOut", delay: index * 0.1 }}
+              style={{ display: "inline-block", fontStyle: "italic" }}
+              className='font-bold italic text-2xl text-gray-300'
+              whileHover={{ scale: 1.2 }}
+            >
+              {letter}
+            </motion.span>
+          ))}
+        </div>
 
-        <motion.div >
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          placeholder="Search PDF by name"
-          className="px-4 py-2 mb-4 mt-3 rounded border border-gray-300 focus:outline-none focus:border-blue-500 bg-white"
-        />
+        <div style={{ display: "flex" }}>
+          {"Find a book to read".split("").map((letter, index) => (
+            <motion.span
+              key={index}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.3, ease: "easeInOut", delay: index * 0.1 }}
+              style={{ display: "inline-block", fontStyle: "italic" }}
+              className='font-bold italic text-2xl text-gray-400 mt-0'
+            >
+              {letter}
+            </motion.span>
+          ))}
+        </div>
 
-        {show && (
-          <ul className="flex flex-wrap justify-center">
-            {filteredPDFSources.map((source, index) => (
-              <li key={index} className="mr-4 mb-4">
-                <a
-                  href={source.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        <motion.div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder="Search PDF by name"
+            className="px-4 py-2 mb-4 mt-3 rounded border border-gray-300 focus:outline-none focus:border-blue-500 bg-white"
+          />
+
+          {show && (
+            <div className="w-full max-w-4xl mx-auto">
+              <ul className="flex flex-wrap justify-center space-x-4 space-y-4">
+                {currentItems.map((source, index) => (
+                  <li key={index} className="w-full sm:w-auto">
+                    <a
+                      href={source.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-block px-6 py-3 bg-blue-500 text-white font-semibold text-center rounded-md hover:bg-blue-600 transition duration-300 ease-in-out"
+                      onClick={() => handleSelectPDF(source.url)}
+                    >
+                      {source.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <div className="flex justify-center mt-4 space-x-2">
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className={`px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 transition duration-300 ease-in-out ${currentPage === 1 ? 'cursor-not-allowed opacity-50' : ''}`}
                 >
-                  {source.name}
-                </a>
-              </li>
-            ))}
-          </ul>
+                  Previous
+                </button>
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className={`px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 transition duration-300 ease-in-out ${currentPage === totalPages ? 'cursor-not-allowed opacity-50' : ''}`}
+                >
+                  Next
+                </button>
+              </div>
+              <div className="flex justify-center mt-2">
+                <span className="text-sm text-gray-600">Page {currentPage} of {totalPages}</span>
+              </div>
+            </div>
+          )}
+        </motion.div>
+
+        {pdfFile && <PDFViewer pdfUrl={pdfFile} />}
+        {!pdfFile && (
+          <div className="drop-area border-2 border-gray-300 border-dashed rounded-md p-10 cursor-pointer">
+            <p className="text-gray-600">Or drag and drop a PDF file here</p>
+          </div>
         )}
       </motion.div>
-      {pdfFile && <PDFViewer pdfUrl={pdfFile} />}
-      {!pdfFile && (
-        <div className="drop-area border-2 border-gray-300 border-dashed rounded-md p-10 cursor-pointer">
-          <p className="text-gray-600">Or drag and drop a PDF file here</p>
-        </div>
-      )}
-     
-    </motion.div>
-      
-      </>
+    </>
   );
-}
+};
 
 export default Ebook;
