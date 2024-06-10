@@ -88,7 +88,7 @@ const Home = () => {
             padding: 0,
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
-            height: "250vh",
+            height: "260vh",
             width: "100%",
             overflow:"hidden"
           }}
